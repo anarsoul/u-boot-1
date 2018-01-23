@@ -271,6 +271,7 @@ config MACH_SUN50I
 	bool "sun50i (Allwinner A64)"
 	select ARM64
 	select DM_I2C
+	select MMC_SUNXI_SUPPORTS_CALIBRATION
 	select PHY_SUN4I_USB
 	select SUNXI_DE2
 	select SUNXI_GEN_SUN6I
