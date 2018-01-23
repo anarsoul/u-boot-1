@@ -536,6 +536,10 @@ config MMC_SUNXI_HAS_NEW_MODE
 	bool
 	depends on MMC_SUNXI
 
+config MMC_SUNXI_SUPPORTS_CALIBRATION
+	bool
+	depends on MMC_SUNXI
+
 config GENERIC_ATMEL_MCI
 	bool "Atmel Multimedia Card Interface support"
 	depends on DM_MMC && BLK && ARCH_AT91
