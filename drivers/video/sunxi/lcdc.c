@@ -217,13 +217,17 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 	bool use_mipi_pll = false;
 
 	if (tcon == 0) {
-#if defined(CONFIG_VIDEO_LCD_IF_PARALLEL) || defined(CONFIG_SUNXI_DE2)
+#ifdef CONFIG_VIDEO_LCD_IF_PARALLEL
 		min_m = 6;
 		max_m = 127;
 #endif
 #ifdef CONFIG_VIDEO_LCD_IF_LVDS
 		min_m = 7;
 		max_m = 7;
+#endif
+#ifdef CONFIG_SUNXI_DE2
+		min_m = 4;
+		max_m = 127;
 #endif
 	} else {
 		min_m = 1;
@@ -287,7 +291,16 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 	} else
 #endif
 	{
+#ifdef CONFIG_SUNXI_DE2
+		if ((best_n * 3000) < 192000) {
+			clock_set_pll3_factors(4, best_n);
+			best_m *= 2;
+		} else {
+			clock_set_pll3(best_n * 3000000);
+		}
+#else
 		clock_set_pll3(best_n * 3000000);
+#endif
 		debug("dotclock: %dkHz = %dkHz: (%d * 3MHz * %d) / %d\n",
 		      dotclock,
 		      (best_double + 1) * clock_get_pll3() / best_m / 1000,
