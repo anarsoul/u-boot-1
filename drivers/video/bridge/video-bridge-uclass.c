@@ -110,7 +110,7 @@ int video_bridge_set_active(struct udevice *dev, bool active)
 
 	debug("%s: %d\n", __func__, active);
 	ret = dm_gpio_set_value(&uc_priv->sleep, !active);
-	if (ret)
+	if (ret && ret != -ENOENT)
 		return ret;
 	if (active) {
 		ret = dm_gpio_set_value(&uc_priv->reset, true);
@@ -120,7 +120,7 @@ int video_bridge_set_active(struct udevice *dev, bool active)
 		ret = dm_gpio_set_value(&uc_priv->reset, false);
 	}
 
-	return ret;
+	return 0;
 }
 
 UCLASS_DRIVER(video_bridge) = {
