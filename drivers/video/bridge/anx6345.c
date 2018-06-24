@@ -274,7 +274,7 @@ static int anx6345_enable(struct udevice *dev)
 
 	/* Deassert reset and enable power */
 	ret = video_bridge_set_active(dev, true);
-	if (ret)
+	if (ret && ret != -ENOENT)
 		return ret;
 
 	/* Reset */
