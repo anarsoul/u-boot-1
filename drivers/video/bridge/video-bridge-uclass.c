@@ -110,8 +110,11 @@ int video_bridge_set_active(struct udevice *dev, bool active)
 
 	debug("%s: %d\n", __func__, active);
 	ret = dm_gpio_set_value(&uc_priv->sleep, !active);
-	if (ret != -ENOENT)
-		return ret;
+	if (ret) {
+		debug("%s: failed to change sleep value: %d\n", __func__, ret);
+		if (ret != -ENOENT)
+			return ret;
+	}
 	if (active) {
 		ret = dm_gpio_set_value(&uc_priv->reset, true);
 		if (ret)
