@@ -38,6 +38,8 @@ static void sunxi_de2_composer_init(void)
 #ifdef CONFIG_MACH_SUN50I
 	u32 reg_value;
 
+	printf("%s - conf sram!\n", __func__);
+
 	/* set SRAM for video use (A64 only) */
 	reg_value = readl(SUNXI_SRAMC_BASE + 0x04);
 	reg_value &= ~(0x01 << 24);
@@ -241,6 +243,14 @@ static int sunxi_de2_probe(struct udevice *dev)
 	/* Before relocation we don't need to do anything */
 	if (!(gd->flags & GD_FLG_RELOC))
 		return 0;
+
+	u32 reg_value;
+
+	printf("%s - conf sram!\n", __func__);
+	/* set SRAM for video use (A64 only) */
+	reg_value = readl(SUNXI_SRAMC_BASE + 0x04);
+	reg_value &= ~(0x01 << 24);
+	writel(reg_value, SUNXI_SRAMC_BASE + 0x04);
 
 	ret = uclass_find_device_by_name(UCLASS_DISPLAY,
 					 "sunxi_lcd", &disp);
