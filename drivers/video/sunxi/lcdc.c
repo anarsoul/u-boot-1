@@ -226,7 +226,7 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 		max_m = 7;
 #endif
 #ifdef CONFIG_SUNXI_DE2
-		min_m = 4;
+		min_m = 6;
 		max_m = 127;
 #endif
 	} else {
