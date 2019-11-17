@@ -11,9 +11,30 @@
 #include <asm/arch-rockchip/grf_rk3399.h>
 #include <asm/arch-rockchip/hardware.h>
 #include <asm/arch-rockchip/misc.h>
+#include <power/regulator.h>
 
 #define GRF_IO_VSEL_BT565_SHIFT 0
 #define PMUGRF_CON0_VSEL_SHIFT 8
+
+static void cpu_regulator_init(const char *name, int value)
+{
+	struct udevice *regulator;
+	int ret;
+
+	ret = regulator_get_by_platname(name, &regulator);
+	if (ret) {
+		debug("%s %s init failed! ret %d\n", __func__, name, ret);
+		return;
+	}
+
+	ret = regulator_set_value(regulator, value);
+	if (ret)
+		debug("%s %s set failed! ret %d\n", __func__, name, ret);
+
+	ret = regulator_set_enable(regulator, true);
+	if (ret)
+		debug("%s %s enabled failed! ret %d\n", __func__, name, ret);
+}
 
 #ifdef CONFIG_MISC_INIT_R
 static void setup_iodomain(void)
@@ -38,6 +59,9 @@ int misc_init_r(void)
 	int ret;
 
 	setup_iodomain();
+
+	cpu_regulator_init("vdd_cpu_l", 925000);
+	cpu_regulator_init("vdd_cpu_b", 1050000);
 
 	ret = rockchip_cpuid_from_efuse(cpuid_offset, cpuid_length, cpuid);
 	if (ret)
